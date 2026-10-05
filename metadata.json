@@ -1,0 +1,6 @@
+{
+  "name": "Finanzas Personales Local (COP)",
+  "description": "Aplicación web local y privada para la gestión integral de finanzas personales en pesos colombianos (COP), sin dependencias cloud.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
