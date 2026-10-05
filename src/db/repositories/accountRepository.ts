@@ -10,16 +10,9 @@ export async function initializeDatabaseIfNeeded(): Promise<void> {
   initPromise = (async () => {
     try {
       await db.open();
-      const accountCount = await db.accounts.count();
-      if (accountCount === 0) {
-        await db.transaction('rw', [db.accounts, db.categories, db.transactions], async () => {
-          const count = await db.accounts.count();
-          if (count === 0) {
-            await db.accounts.bulkAdd(INITIAL_ACCOUNTS);
-            await db.categories.bulkAdd(INITIAL_CATEGORIES);
-            await db.transactions.bulkAdd(INITIAL_TRANSACTIONS);
-          }
-        });
+      const categoriesCount = await db.categories.count();
+      if (categoriesCount === 0) {
+        await db.categories.bulkAdd(INITIAL_CATEGORIES);
       }
     } catch (err) {
       console.warn('Database initialization completed or already initialized:', err);

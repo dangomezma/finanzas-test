@@ -5,6 +5,7 @@ import {
   ArrowLeftRight,
   PieChart,
   Target,
+  Calendar,
   CalendarClock,
   BarChart3,
   Tags,
@@ -17,6 +18,7 @@ export type NavView =
   | 'dashboard'
   | 'accounts'
   | 'transactions'
+  | 'calendar'
   | 'budgets'
   | 'goals'
   | 'recurring'
@@ -39,6 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'dashboard' as NavView, label: 'Dashboard', icon: LayoutDashboard },
     { id: 'accounts' as NavView, label: 'Cuentas', icon: WalletCards },
     { id: 'transactions' as NavView, label: 'Transacciones', icon: ArrowLeftRight },
+    { id: 'calendar' as NavView, label: 'Calendario', icon: Calendar },
     { id: 'budgets' as NavView, label: 'Presupuestos', icon: PieChart },
     { id: 'goals' as NavView, label: 'Metas de Ahorro', icon: Target },
     { id: 'recurring' as NavView, label: 'Pagos Recurrentes', icon: CalendarClock },

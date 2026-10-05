@@ -15,6 +15,7 @@ import { RecurringView } from './components/recurring/RecurringView';
 import { ReportsView } from './components/reports/ReportsView';
 import { CategoriesView } from './components/categories/CategoriesView';
 import { BackupView } from './components/backup/BackupView';
+import { CalendarView } from './components/calendar/CalendarView';
 import { NewTransactionModal } from './components/transactions/NewTransactionModal';
 import { NewAccountModal } from './components/accounts/NewAccountModal';
 import { EditAccountModal } from './components/accounts/EditAccountModal';
@@ -175,12 +176,30 @@ export default function App() {
                 monthSummary={currentMonthSummary}
                 recentTransactions={transactions}
                 categories={categories}
+                recurringList={recurringList}
                 upcomingPayments={upcomingStatus.items}
                 onOpenNewTransaction={handleOpenNewTransaction}
                 onNavigateToAccounts={() => setCurrentView('accounts')}
                 onNavigateToTransactions={() => setCurrentView('transactions')}
                 onNavigateToReports={() => setCurrentView('reports')}
                 onNavigateToRecurring={() => setCurrentView('recurring')}
+                onNavigateToCalendar={() => setCurrentView('calendar')}
+                onExecutePayment={async (id) => {
+                  await executeRecurringPayment(id);
+                }}
+              />
+            )}
+
+            {currentView === 'calendar' && (
+              <CalendarView
+                accounts={accounts}
+                categories={categories}
+                recurringList={recurringList}
+                onCreateRecurring={createRecurring}
+                onDeleteRecurring={deleteRecurring}
+                onExecutePayment={async (id, paymentDate) => {
+                  await executeRecurringPayment(id, paymentDate);
+                }}
               />
             )}
 

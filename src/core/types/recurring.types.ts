@@ -15,7 +15,9 @@ export interface RecurringTransaction {
   type: 'expense' | 'income';      // Gasto o Ingreso recurrente
   frequency: RecurringFrequency;
   dueDay: number;                  // Día del mes (1 a 31) en que vence
-  sourceAccountId: string;         // FK Account (de dónde se debita)
+  dueDay2?: number;                 // Segundo día para pagos quincenales (ej. 30)
+  icon?: string;                    // Nombre del icono opcional
+  sourceAccountId: string;         // FK Account (de dónde se debita o acredita)
   categoryId?: string;             // FK Category
   subcategoryId?: string;
   isActive: boolean;               // Activo o pausado

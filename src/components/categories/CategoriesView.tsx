@@ -28,6 +28,7 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({
   const [subcatInput, setSubcatInput] = useState('');
   const [subcategories, setSubcategories] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [catToDelete, setCatToDelete] = useState<Category | null>(null);
 
   const currentList = activeTab === 'expense' ? expenseCategories : incomeCategories;
 
@@ -260,15 +261,13 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({
                   </div>
                 </div>
 
-                {!cat.isSystemDefault && (
-                  <button
-                    onClick={() => onDeleteCategory(cat.id)}
-                    className="p-1.5 text-zinc-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
-                    title="Eliminar categoría"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                )}
+                <button
+                  onClick={() => setCatToDelete(cat)}
+                  className="p-1.5 text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
+                  title="Eliminar categoría"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
 
               {/* Lista de subcategorías */}
@@ -288,6 +287,54 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({
           </div>
         ))}
       </div>
+
+      {/* Modal de confirmación para eliminar categoría */}
+      {catToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-4">
+            <div className="flex items-center space-x-3">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0"
+                style={{ backgroundColor: catToDelete.color }}
+              >
+                <IconResolver name={catToDelete.icon} className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+                  ¿Eliminar categoría?
+                </h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  "{catToDelete.name}"
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-zinc-600 dark:text-zinc-300">
+              Esta categoría se eliminará del selector. Las transacciones pasadas mantendrán su historial, pero no podrás asignarla a nuevos movimientos a menos que la vuelvas a crear.
+            </p>
+
+            <div className="flex justify-end space-x-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setCatToDelete(null)}
+                className="px-3 py-2 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  await onDeleteCategory(catToDelete.id);
+                  setCatToDelete(null);
+                }}
+                className="px-4 py-2 text-xs font-medium bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-xs transition-colors cursor-pointer"
+              >
+                Sí, eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

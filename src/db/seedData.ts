@@ -110,6 +110,21 @@ export const INITIAL_CATEGORIES: Category[] = [
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
+  {
+    id: 'cat-pago-tarjeta',
+    name: 'Pago Tarjeta / Deudas',
+    type: 'expense',
+    icon: 'CreditCard',
+    color: '#e11d48',
+    isSystemDefault: false,
+    subcategories: [
+      { id: 'sub-tc-cuota', name: 'Pago Cuota Tarjeta de Crédito' },
+      { id: 'sub-credito-libre', name: 'Crédito de Libre Inversión' },
+      { id: 'sub-intereses-mora', name: 'Intereses y Comisiones' },
+    ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
 
   // Ingresos
   {

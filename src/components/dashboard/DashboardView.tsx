@@ -13,13 +13,14 @@ import {
 import type { AccountCalculatedSummary } from '../../core/types/account.types';
 import type { Transaction } from '../../core/types/transaction.types';
 import type { Category } from '../../core/types/category.types';
-import type { UpcomingPaymentItem } from '../../core/types/recurring.types';
+import type { RecurringTransaction, UpcomingPaymentItem } from '../../core/types/recurring.types';
 import { MoneyBadge } from '../common/MoneyBadge';
 import { IconResolver } from '../common/IconResolver';
 import { formatDateShort } from '../../core/formatters/date';
 import { calculateMonthlyCashFlowHistory } from '../../core/accounting/analyticsEngine';
 import { BarComparisonChart } from '../charts/BarComparisonChart';
 import { MonthlyCategoryExpenseChart } from './MonthlyCategoryExpenseChart';
+import { DashboardCalendarWidget } from './DashboardCalendarWidget';
 
 interface DashboardViewProps {
   summaries: AccountCalculatedSummary[];
@@ -27,12 +28,15 @@ interface DashboardViewProps {
   monthSummary: { totalIncomeInCents: number; totalExpenseInCents: number; netSavingsInCents: number; savingsRatePercentage: number };
   recentTransactions: Transaction[];
   categories: Category[];
+  recurringList?: RecurringTransaction[];
   upcomingPayments?: UpcomingPaymentItem[];
   onOpenNewTransaction: () => void;
   onNavigateToAccounts: () => void;
   onNavigateToTransactions: () => void;
   onNavigateToReports: () => void;
   onNavigateToRecurring?: () => void;
+  onNavigateToCalendar?: () => void;
+  onExecutePayment?: (id: string) => Promise<unknown>;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -41,12 +45,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   monthSummary,
   recentTransactions,
   categories,
+  recurringList = [],
   upcomingPayments = [],
   onOpenNewTransaction,
   onNavigateToAccounts,
   onNavigateToTransactions,
   onNavigateToReports,
   onNavigateToRecurring,
+  onNavigateToCalendar,
+  onExecutePayment,
 }) => {
   // Dinero líquido disponible (Activos - Deuda tarjetas)
   const liquidCashInCents = netWorth.totalAssetsInCents - netWorth.totalLiabilitiesInCents;
@@ -179,6 +186,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Widget de Calendario y Próximas Quincenas/Vencimientos */}
+      {onNavigateToCalendar && (
+        <DashboardCalendarWidget
+          recurringList={recurringList}
+          upcomingPayments={upcomingPayments}
+          onNavigateToCalendar={onNavigateToCalendar}
+          onExecutePayment={onExecutePayment}
+        />
+      )}
 
       {/* Gráfico Comparativo de Flujo Mensual */}
       <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xs space-y-3">
