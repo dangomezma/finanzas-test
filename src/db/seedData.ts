@@ -1,66 +1,20 @@
 import type { Account } from '../core/types/account.types';
 import type { Category } from '../core/types/category.types';
 import type { Transaction } from '../core/types/transaction.types';
-import { getTodayDateString } from '../core/formatters/date';
+import type { Budget, FinancialGoal } from '../core/types/budget.types';
+import type { RecurringTransaction } from '../core/types/recurring.types';
 
-export const INITIAL_ACCOUNTS: Account[] = [
-  {
-    id: 'acc-bancolombia',
-    name: 'Bancolombia Ahorros',
-    type: 'savings',
-    currency: 'COP',
-    initialBalanceInCents: 150000000, // $1.500.000 COP
-    isActive: true,
-    color: '#3b82f6',
-    icon: 'Landmark',
-    description: 'Cuenta principal para nómina y ahorros',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'acc-nequi',
-    name: 'Nequi',
-    type: 'wallet',
-    currency: 'COP',
-    initialBalanceInCents: 35000000, // $350.000 COP
-    isActive: true,
-    color: '#a855f7',
-    icon: 'Smartphone',
-    description: 'Billetera digital para pagos diarios y transferencias rápidas',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'acc-efectivo',
-    name: 'Efectivo',
-    type: 'cash',
-    currency: 'COP',
-    initialBalanceInCents: 12000000, // $120.000 COP
-    isActive: true,
-    color: '#10b981',
-    icon: 'Banknote',
-    description: 'Efectivo en billetera',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'acc-tc-visa',
-    name: 'Tarjeta de Crédito Visa',
-    type: 'credit_card',
-    currency: 'COP',
-    initialBalanceInCents: 0, // Sin deuda inicial
-    creditLimitInCents: 350000000, // Cupo $3.500.000 COP
-    statementClosingDay: 15, // Corte día 15
-    paymentDueDay: 5, // Pago día 5
-    isActive: true,
-    color: '#f59e0b',
-    icon: 'CreditCard',
-    description: 'Tarjeta para compras y suscripciones',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
+/**
+ * Inicialización limpia: Cero cuentas iniciales por defecto.
+ * El usuario crea sus propias cuentas bancarias, billeteras o tarjetas desde cero.
+ */
+export const INITIAL_ACCOUNTS: Account[] = [];
 
+/**
+ * Categorías predeterminadas del sistema para Gastos e Ingresos.
+ * Permiten que el usuario pueda empezar a registrar gastos inmediatamente
+ * sin tener que configurar toda la taxonomía desde cero.
+ */
 export const INITIAL_CATEGORIES: Category[] = [
   // Gastos
   {
@@ -203,163 +157,22 @@ export const INITIAL_CATEGORIES: Category[] = [
   },
 ];
 
-export const INITIAL_TRANSACTIONS: Transaction[] = [
-  {
-    id: 'tx-seed-1',
-    type: 'income',
-    amountInCents: 420000000, // $4.200.000 COP
-    currency: 'COP',
-    date: getTodayDateString(),
-    sourceAccountId: 'acc-bancolombia',
-    categoryId: 'cat-salario',
-    subcategoryId: 'sub-sueldo',
-    description: 'Pago Nómina Quincenal / Mensual',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'tx-seed-2',
-    type: 'expense',
-    amountInCents: 38000000, // $380.000 COP
-    currency: 'COP',
-    date: getTodayDateString(),
-    sourceAccountId: 'acc-bancolombia',
-    categoryId: 'cat-alimentacion',
-    subcategoryId: 'sub-mercado',
-    description: 'Mercado del mes Carulla / Éxito',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'tx-seed-3',
-    type: 'transfer',
-    amountInCents: 20000000, // $200.000 COP
-    currency: 'COP',
-    date: getTodayDateString(),
-    sourceAccountId: 'acc-bancolombia',
-    targetAccountId: 'acc-nequi',
-    description: 'Recarga Nequi para gastos menores',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'tx-seed-4',
-    type: 'expense',
-    amountInCents: 4500000, // $45.000 COP
-    currency: 'COP',
-    date: getTodayDateString(),
-    sourceAccountId: 'acc-tc-visa',
-    categoryId: 'cat-entretenimiento',
-    subcategoryId: 'sub-streaming',
-    description: 'Suscripción mensual Netflix & Spotify',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
+/**
+ * Cero transacciones iniciales. Historial limpio desde el comienzo.
+ */
+export const INITIAL_TRANSACTIONS: Transaction[] = [];
 
-export const INITIAL_BUDGETS = [
-  {
-    id: 'b-alimentacion',
-    categoryId: 'cat-alimentacion',
-    amountInCents: 80000000, // $800.000 COP mensual
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'b-transporte',
-    categoryId: 'cat-transporte',
-    amountInCents: 25000000, // $250.000 COP mensual
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'b-entretenimiento',
-    categoryId: 'cat-entretenimiento',
-    amountInCents: 15000000, // $150.000 COP mensual
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
+/**
+ * Cero presupuestos iniciales.
+ */
+export const INITIAL_BUDGETS: Budget[] = [];
 
-export const INITIAL_GOALS = [
-  {
-    id: 'goal-fondo-emergencia',
-    name: 'Fondo de Emergencia',
-    targetAmountInCents: 500000000, // $5.000.000 COP
-    currentAmountInCents: 150000000, // $1.500.000 COP ahorrados
-    targetDate: `${new Date().getFullYear()}-12-31`,
-    description: 'Ahorro de respaldo equivalente a 3 meses de gastos fijos.',
-    color: '#10b981',
-    status: 'in_progress' as const,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'goal-computador',
-    name: 'Renovación de Computador Portátil',
-    targetAmountInCents: 380000000, // $3.800.000 COP
-    currentAmountInCents: 120000000, // $1.200.000 COP
-    targetDate: `${new Date().getFullYear() + 1}-03-30`,
-    description: 'Nuevo portátil para trabajo y desarrollo.',
-    color: '#3b82f6',
-    status: 'in_progress' as const,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
+/**
+ * Cero metas iniciales.
+ */
+export const INITIAL_GOALS: FinancialGoal[] = [];
 
-export const INITIAL_RECURRING = [
-  {
-    id: 'rec-netflix',
-    name: 'Suscripción Netflix Familiar',
-    amountInCents: 4500000, // $45.000 COP
-    type: 'expense' as const,
-    frequency: 'monthly' as const,
-    dueDay: 10,
-    sourceAccountId: 'acc-tc-visa',
-    categoryId: 'cat-entretenimiento',
-    subcategoryId: 'sub-streaming',
-    isActive: true,
-    description: 'Plan 4 pantallas Netflix',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'rec-internet',
-    name: 'Internet Fibra Óptica Claro',
-    amountInCents: 8990000, // $89.900 COP
-    type: 'expense' as const,
-    frequency: 'monthly' as const,
-    dueDay: 18,
-    sourceAccountId: 'acc-bancolombia',
-    categoryId: 'cat-vivienda',
-    subcategoryId: 'sub-servicios',
-    isActive: true,
-    description: 'Internet 300 Mbps hogar',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'rec-gimnasio',
-    name: 'Membresía SmartFit',
-    amountInCents: 7990000, // $79.900 COP
-    type: 'expense' as const,
-    frequency: 'monthly' as const,
-    dueDay: 25,
-    sourceAccountId: 'acc-tc-visa',
-    categoryId: 'cat-salud',
-    subcategoryId: 'sub-deporte',
-    isActive: true,
-    description: 'Plan Black SmartFit',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
-
-
+/**
+ * Cero pagos recurrentes iniciales.
+ */
+export const INITIAL_RECURRING: RecurringTransaction[] = [];

@@ -87,3 +87,21 @@ export async function importDatabaseBackup(jsonString: string): Promise<{ succes
     return { success: false, message: `Error al procesar el archivo: ${(error as Error).message}` };
   }
 }
+
+/**
+ * Restablece la base de datos a cero (elimina todas las cuentas, transacciones, presupuestos, metas y recurrentes).
+ */
+export async function resetDatabaseToZero(): Promise<{ success: boolean; message: string }> {
+  try {
+    await db.transaction('rw', [db.accounts, db.transactions, db.budgets, db.goals, db.recurring], async () => {
+      await db.accounts.clear();
+      await db.transactions.clear();
+      await db.budgets.clear();
+      await db.goals.clear();
+      await db.recurring.clear();
+    });
+    return { success: true, message: 'Todos los datos financieros han sido restablecidos a cero correctamente.' };
+  } catch (error) {
+    return { success: false, message: `Error al restablecer datos: ${(error as Error).message}` };
+  }
+}

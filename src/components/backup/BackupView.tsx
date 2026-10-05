@@ -9,8 +9,9 @@ import {
   FileCheck2,
   RefreshCw,
   ServerCrash,
+  Trash2,
 } from 'lucide-react';
-import { exportDatabaseBackup, importDatabaseBackup } from '../../db/backupService';
+import { exportDatabaseBackup, importDatabaseBackup, resetDatabaseToZero } from '../../db/backupService';
 import { runAccountingAudit, type AuditTestResult } from '../../core/testing/accountingAudit';
 
 interface BackupViewProps {
@@ -68,6 +69,27 @@ export const BackupView: React.FC<BackupViewProps> = ({
   const handleRunAudit = () => {
     const report = runAccountingAudit();
     setAuditResults(report);
+  };
+
+  const [confirmReset, setConfirmReset] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+
+  const handleResetToZero = async () => {
+    try {
+      setIsResetting(true);
+      const res = await resetDatabaseToZero();
+      if (res.success) {
+        setStatusMessage({ type: 'success', text: res.message });
+        setConfirmReset(false);
+        onRefreshData();
+      } else {
+        setStatusMessage({ type: 'error', text: res.message });
+      }
+    } catch (err) {
+      setStatusMessage({ type: 'error', text: 'Error al reiniciar datos: ' + (err as Error).message });
+    } finally {
+      setIsResetting(false);
+    }
   };
 
   return (
@@ -240,6 +262,53 @@ export const BackupView: React.FC<BackupViewProps> = ({
             </div>
           </div>
         )}
+      </div>
+
+      {/* Zona de Peligro: Restablecer todo a cero */}
+      <div className="bg-white dark:bg-zinc-900 border border-rose-200 dark:border-rose-900/60 rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+              <Trash2 className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-base">
+                Restablecer Todo a Cero
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                Elimina todas las cuentas, transacciones, presupuestos y metas registradas para iniciar completamente en limpio.
+              </p>
+            </div>
+          </div>
+
+          {!confirmReset ? (
+            <button
+              onClick={() => setConfirmReset(true)}
+              className="inline-flex items-center space-x-2 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800 font-medium px-4 py-2 rounded-xl text-xs cursor-pointer transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Limpiar Todos los Datos</span>
+            </button>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <button
+                disabled={isResetting}
+                onClick={handleResetToZero}
+                className="inline-flex items-center space-x-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-medium px-4 py-2 rounded-xl text-xs cursor-pointer transition-colors shadow-xs"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>{isResetting ? 'Borrando...' : 'Sí, borrar todo a cero'}</span>
+              </button>
+              <button
+                disabled={isResetting}
+                onClick={() => setConfirmReset(false)}
+                className="bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 px-3 py-2 rounded-xl text-xs font-medium cursor-pointer transition-colors"
+              >
+                Cancelar
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Privacidad y Filosofía */}
